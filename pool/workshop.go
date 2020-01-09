@@ -43,7 +43,7 @@ type (
 		stats           *WorkshopStats
 		statsReader     atomic.Value
 		lock            sync.Mutex
-		wg              sync.WaitGroup
+		wg              sync.WaitGroup  // 用于等待 workers, A WaitGroup waits for a collection of goroutines to finish.
 		closeCh         chan struct{}
 		closeLock       sync.Mutex
 	}
@@ -340,6 +340,8 @@ func (w *Workshop) refreshLocked(reportStats bool) {
 	w.minLoadInfo = minLoadInfo
 }
 
+// 不健康返回false,健康返回true
+// 将不健康的worker移除并关闭
 func (w *Workshop) checkInfoLocked(info *workerInfo) bool {
 	if !info.worker.Health() ||
 		(info.jobNum == 0 && coarsetime.FloorTimeNow().After(info.idleExpire)) {

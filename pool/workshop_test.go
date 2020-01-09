@@ -43,6 +43,7 @@ func reportStat(t *testing.T, startNano int64) {
 	)
 }
 
+// 21s
 func TestChanPool(t *testing.T) {
 	var workerPool = make(chan *testWorker, poolSize)
 	for i := 0; i < poolSize; i++ {
@@ -64,6 +65,7 @@ func TestChanPool(t *testing.T) {
 	reportStat(t, startNano)
 }
 
+// 0.9s
 func TestWorkshop(t *testing.T) {
 	w := NewWorkshop(poolSize, time.Second, newTestWorker)
 	defer w.Close()
